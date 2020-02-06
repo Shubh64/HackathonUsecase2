@@ -41,6 +41,10 @@ class VendorHome extends PolymerElement {
         {
           width:120px;
         }
+        paper-tab
+        {
+          font-size:22px;
+        }
       </style>
       <h2>Hello [[prop1]]!</h2>
       <ajax-call id="ajax"></ajax-call>
@@ -49,17 +53,12 @@ class VendorHome extends PolymerElement {
             <paper-dialog-scrollable>
                 <iron-form id="form">
                     <form>
-                        <paper-input type="number" label="Enter Name" name="itemName" required
-                            error-message="ItemName is required"></paper-input>
-                        <paper-input label="Enter Price" name="itemPrice" required error-message="Price is required"></paper-input>
+                        <paper-input label="Enter Price" id="price" name="itemPrice" required error-message="Price is required"></paper-input>
                         <paper-dropdown-menu id="categories" name="categories" vertical-offset="60">
                         <paper-listbox slot="dropdown-content" class="dropdown-content" selected=0>
-                            <paper-item>Beverages</paper-item>
-                            <paper-item>Salad</paper-item>
-                            <paper-item>Health Drinks</paper-item>
-                            <paper-item>Juice</paper-item>
-                            <paper-item>Milk Shake</paper-item>
-                            <paper-item>Lassi</paper-item>
+                        <template is="dom-repeat"  items={{itemDetails}}>
+                            <paper-item on-click="_getCategoryId">{{item.itemName}}</paper-item>
+                            </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
                         </form>
@@ -104,6 +103,18 @@ class VendorHome extends PolymerElement {
       selected: {
         type: Number,
         value: 0
+      },
+      itemDetails:{
+        type:Array,
+        value:[]
+      },
+      categoryId:{
+        type:Number,
+        value:0
+      },
+      itemId:{
+        type:Number,
+        value:0
       }
     };
   }
@@ -117,6 +128,12 @@ class VendorHome extends PolymerElement {
     super.connectedCallback();
     this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/users`,null,'userData')  
   }
+  _getCategoryId(event)
+  {
+    this.categoryId=event.model.item.categoryId
+    this.itemId=event.model.item.itemId
+    console.log(event.model.item.categoryId)
+  }
   /**
    * 
    * @param {*} event 
@@ -124,12 +141,19 @@ class VendorHome extends PolymerElement {
   _handleAdd(event)
   {
     console.log(event)
-    this.$.ajax._makeAjaxCall('get',`http://10.117.189.77:8085/foodplex/vendors`,null,'populateFields')
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.77:8080/foodplex/vendors`,null,'populateFields')
     this.$.modal.open()
   }
   _populateFields(event)
   {
     console.log(event.detail)
+    this.itemDetails=event.detail.data
+  }
+  _handleSubmit()
+  {
+    let price=this.$.price.value;
+    let postObj={price,categoryId:this.categoryId,itemId:this.itemId}
+    this.$.ajax._makeAjaxCall('post',`http://10.117.189.77:8080/foodplex/vendors/10/item`,postObj,'')
   }
 }
 
