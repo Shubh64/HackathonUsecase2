@@ -92,8 +92,6 @@ class VendorHome extends PolymerElement {
             </ul>
             </paper-card>
           </template>
-          <h2>VendorOrders</h2>
-          
     `;
   }
   static get properties() {
