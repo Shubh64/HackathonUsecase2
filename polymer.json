@@ -1,4 +1,5 @@
 {
+  "root": "~/HungerBox App/HackathonUseCase2",
   "entrypoint": "index.html",
   "shell": "src/food-plex/food-plex.js",
   "fragments": [

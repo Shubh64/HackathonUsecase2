@@ -9,6 +9,7 @@ import '@polymer/paper-icon-button/paper-icon-button.js';
 import '@polymer/iron-icons/iron-icons.js';
 import '@polymer/iron-icon/iron-icon.js';
 import '../shared/API/ajax-call.js';
+import {afterNextRender} from '@polymer/polymer/lib/utils/render-status.js';
 /**
  * @customElement
  * @polymer
@@ -57,7 +58,7 @@ class FoodOrder extends PolymerElement {
             <ul><li>item:{{item.itemName}}</li>
             <li>Price:{{item.itemPrice}}</li>
             <li><paper-icon-button id="removeBtn" on-click="_handleRemove" icon="remove"></paper-icon-button>
-            {{quantity}}
+            <span id="quantity{{item.itemId}}">0</span>
             <paper-icon-button id="addBtn" on-click="_handleAdd" icon="add"></paper-icon-button></li>
             </ul>
             </paper-card>
@@ -77,7 +78,7 @@ class FoodOrder extends PolymerElement {
       },
       availableItems:{
         type:Array,
-        value:[]
+        value:[{itemId:"1"},{itemId:"2"}]
       },
       availableCategories:{
         type:Array,
@@ -105,12 +106,17 @@ class FoodOrder extends PolymerElement {
   }
   _handleAdd(event){
     this.quantity+=1;
+    let quant=`quantity${event.model.item.itemId}`
+    let something=this.shadowRoot.querySelector(`#${quant}`)
+something.innerHTML=parseInt(something.innerHTML)+1
     sessionStorage.setItem('vendorItemId',event.model.item.itemId)
     sessionStorage.setItem('price',event.model.item.itemPrice)
   }
-  _handleRemove(){
-    if(this.quantity!=0){
-    this.quantity-=1;
+  _handleRemove(event){
+    let quant=`quantity${event.model.item.itemId}`
+    let something=this.shadowRoot.querySelector(`#${quant}`)
+    if(something.innerHTML!=0){
+      something.innerHTML=parseInt(something.innerHTML)-1
   }}
   _filterCategory(event)
   {
