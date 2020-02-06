@@ -202,6 +202,7 @@ class PaymentPage extends PolymerElement {
   </smart-accordion>
   <smart-accordion>
     <div slot="summary">Wallets</div>
+    <paper-input label="Enter your upi" id="upiId"><div slot="suffix">@upi</div></paper-input>
     <paper-radio-group selected="phonePe" id="payment">
       <paper-radio-button name="PhonePe">PhonePe</paper-radio-button>
       <paper-radio-button name="PayTM">PayTM</paper-radio-button>
@@ -216,8 +217,19 @@ class PaymentPage extends PolymerElement {
       prop1: {
         type: String,
         value: 'payment-page'
-      }
+      },
+    postObj:Object
     };
+  }
+  _handleSubmit(){
+    const upiId=this.$.upiId.value;
+    const paymentMode=this.$.payment.selected;
+    this.postObj={upiId,paymentMode}
+    let orderList=[]
+    orderList.push(JSON.parse(sessionStorage.getItem('orderDetailsObj')));
+    this.postObj.orderList=orderList;
+    console.log(this.postObj);
+
   }
 }
 

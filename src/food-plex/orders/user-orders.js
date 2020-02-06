@@ -58,7 +58,6 @@ class UserOrders extends PolymerElement
   }
   _gettingOrders(){
       this.myOrders=event.target.response.orders
-      console.log(this.myOrders)
   }
 }
     customElements.define('user-orders',UserOrders)
