@@ -1,6 +1,8 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-card/paper-card.js';
+import '@polymer/app-route/app-location.js';
 import '@polymer/paper-tabs/paper-tab.js';
+import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-tabs/paper-tabs.js';
 import '@polymer/iron-pages/iron-pages.js';
 import '@polymer/paper-icon-button/paper-icon-button.js';
@@ -20,6 +22,11 @@ class FoodOrder extends PolymerElement {
         }
         paper-card{
           width:100%;
+        }
+        span{
+          display:flex;
+          margin-top: 10px;
+          justify-content: center;
         }
         paper-card ul
         {
@@ -57,6 +64,7 @@ class FoodOrder extends PolymerElement {
             </paper-card>
           </template>
       </iron-pages>
+      <span><paper-button on-click="_foodOrder" raised id="foodOrder">OrderNow</paper-button></span>
     `;
   }
   static get properties() {
@@ -106,6 +114,14 @@ class FoodOrder extends PolymerElement {
     if(this.quantity!=0){
     this.quantity-=1;
   }}
+  _foodOrder(){
+    const quantity=this.quantity;
+    const vendorItemId=sessionStorage.getItem('vendorItemId')
+    const price=this.$.price;
+    const obj={quantity,vendorItemId,price}
+    sessionStorage.setItem('orderDetailsObj', JSON.stringify(obj))
+   this.set('route.path','/payment')
+  }
 }
 
 window.customElements.define('food-order', FoodOrder);
