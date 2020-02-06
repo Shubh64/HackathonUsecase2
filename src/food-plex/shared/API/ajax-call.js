@@ -58,6 +58,9 @@ class AjaxCall extends PolymerElement {
         case 'myOrders': 
         this.dispatchEvent(new CustomEvent('getting-orders', { bubbles: true, composed: true, detail: { data } }))
         break;
+        case 'getVendorItems':
+        this.dispatchEvent(new CustomEvent('vendor-items', { bubbles: true, composed: true, detail: { data } }))
+        break;
       default:
 
     }

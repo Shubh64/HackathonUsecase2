@@ -93,11 +93,11 @@ class FoodOrder extends PolymerElement {
   connectedCallback()
   {
     super.connectedCallback();
-    this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/categories`,null,'fetchingCategories')  
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/categories?userId=${sessionStorage.getItem('userId')}`,null,'fetchingCategories')  
   }
   _fetchingCategories(event){
     console.log(event.detail.data)
-    this.availableCategories=event.detail.data
+    this.availableCategories=event.detail.data.itemCategoryList
   }
   _handleAdd(){
     this.quantity+=1;

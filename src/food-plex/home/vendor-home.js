@@ -61,6 +61,13 @@ class VendorHome extends PolymerElement {
                             </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
+                        <paper-dropdown-menu id="categories" name="categories" vertical-offset="60">
+                        <paper-listbox slot="dropdown-content" class="dropdown-content" selected=0>
+                        <template is="dom-repeat"  items={{itemDetails}}>
+                            <paper-item on-click="_getCategoryId">{{item.categoryName}}</paper-item>
+                            </template>
+                        </paper-listbox>
+                    </paper-dropdown-menu>
                         </form>
                 </iron-form>
                 <br />
@@ -72,13 +79,13 @@ class VendorHome extends PolymerElement {
         </paper-dialog>
       <paper-button raised on-click="_handleAdd">Add Item</paper-button>
       <paper-tabs selected="{{selected}}" scrollable>
-          <template is="dom-repeat" items={{availableItems}}>
-            <paper-tab name="{{item.category}}"> {{item.category}}</paper-tab>
+          <template is="dom-repeat" items={{availableCategories}}>
+            <paper-tab name="{{item.categoryName}}" on-click="_handleCategoryItems"> {{item.categoryName}}</paper-tab>
           </template>
       </paper-tabs>
       <iron-pages selected="{{selected}}">
           <template is="dom-repeat" items={{availableItems}}>
-            <paper-card name="{{item.category}}">
+            <paper-card name="{{item.itemList}}">
             <ul>
             <li>item:{{item.name}}</li>
             <li>Price:{{item.price}}</li>
@@ -97,8 +104,11 @@ class VendorHome extends PolymerElement {
       },
       availableItems:{
         type:Array,
-       // value:[{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"}, {name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"}]
-       value: [{name:"Dosa",price:"50",category:"Salad"},{name:"Dosa",price:"500",category:"Sandwich"},{name:"Dosa",price:"509",category:"Healthy bites"},{name:"Dosa",price:"50",category:"Soups"}, {name:"Dosa",price:"50",category:"Soups"},{name:"Dosa",price:"50",category:"Soups"}]
+        value:[]
+      },
+      availableCategories:{
+        type:Array,
+        value:[]
       },
       selected: {
         type: Number,
@@ -115,6 +125,10 @@ class VendorHome extends PolymerElement {
       itemId:{
         type:Number,
         value:0
+      },
+      selectedCategoryTab:{
+        type:String,
+        value:''
       }
     };
   }
@@ -122,11 +136,17 @@ class VendorHome extends PolymerElement {
   {
     super.ready();
     this.addEventListener('populate-fields', (e) => this._populateFields(e))
+    this.addEventListener('vendor-items', (e) => this._getVendorItems(e))
+    this.addEventListener('fetching-categories', (e) => this._fetchingCategories(e))
   }
   connectedCallback()
   {
     super.connectedCallback();
-    this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/users`,null,'userData')  
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/categories?userId=${sessionStorage.getItem('userId')}`,null,'fetchingCategories')  
+  }
+  _fetchingCategories(event){
+    console.log(event.detail.data)
+    this.availableCategories=event.detail.data.itemCategoryList
   }
   _getCategoryId(event)
   {
@@ -151,9 +171,22 @@ class VendorHome extends PolymerElement {
   }
   _handleSubmit()
   {
-    let price=this.$.price.value;
-    let postObj={price,categoryId:this.categoryId,itemId:this.itemId}
-    this.$.ajax._makeAjaxCall('post',`http://10.117.189.77:8080/foodplex/vendors/10/item`,postObj,'')
+    const price=this.$.price.value;
+    const postObj={price,categoryId:this.categoryId,itemId:this.itemId}
+    this.$.ajax._makeAjaxCall('post',`http://10.117.189.77:8080/foodplex/vendors/${sessionStorage.getItem('userId')}/item`,postObj,'')
+  }
+  _handleCategoryItems(event)
+  {
+     this.selectedCategoryTab=event.model.item.categoryName
+    console.log(this.selectedCategoryTab)
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.77:8080/foodplex/categories?userId=${sessionStorage.getItem('userId')}`,null,'getVendorItems')
+  }
+  _getVendorItems(event)
+  {
+    let items=event.detail.data.itemCategoryList
+    items.filter(item=>{
+      item.categoryName=this.selectedCategoryTab
+    })
   }
 }
 

@@ -50,7 +50,7 @@ class UserHome extends PolymerElement {
   }
   connectedCallback() {
     super.connectedCallback();
-    // this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/users`,null,'userData')  
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/users`,null,'userData')  
     let currentImage = 0;
     let images = [
       "url(../../../images/carousal1.jpg)",
