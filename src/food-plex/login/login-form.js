@@ -15,10 +15,9 @@ class LoginForm extends PolymerElement {
       <style>
         :host {
           display: block;
-          height:79vh;
+          height:80.8vh;
           overflow-y:hidden;
           background-size:cover;
-          background-image:url(../../../images/login.jpg)
         }
         .form
         {
@@ -69,7 +68,7 @@ class LoginForm extends PolymerElement {
     const mobileNumber = this.$.mobileNo.value;
     const password = this.$.password.value;
     const postObj={mobileNumber,password}
-    this.$.ajax._makeAjaxCall('post',`http://10.117.189.138:8085/foodplex/users`,postObj,'login')  
+    this.$.ajax._makeAjaxCall('post',`http://10.117.189.208:8085/foodplex/users`,postObj,'login')  
     
   } 
   _loginStatus(event)
@@ -82,6 +81,22 @@ class LoginForm extends PolymerElement {
       this.set('route.path','./user-home')
       else if(data.role=='VENDOR')
       this.set('route.path','./vendor-home')
+  }
+  connectedCallback(){
+    super.connectedCallback();
+    let currentImage = 0;
+    let images = [
+      "url(../../../images/carousal2.jpg)",
+      "url(../../../images/login.jpg)",
+      "url(../../../images/carousal3.jpg)"
+    ];
+    let nextImage = () => {
+      currentImage = (currentImage + 1) % images.length;
+      this.shadowRoot.host.style.background = images[currentImage];
+      this.shadowRoot.host.style.backgroundSize = 'cover';
+      setTimeout(nextImage, 5000)
+    }
+      nextImage();
   }
 }
 

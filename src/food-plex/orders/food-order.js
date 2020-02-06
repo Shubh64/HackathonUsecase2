@@ -52,18 +52,16 @@ class FoodOrder extends PolymerElement {
             <paper-tab on-click="_filterCategory"> {{item.categoryName}}</paper-tab>
           </template>
       </paper-tabs>
-      <iron-pages selected="{{selected}}">
           <template is="dom-repeat" items={{availableItems}}>
             <paper-card>
-            <ul><li>item:{{item.name}}</li>
-            <li>Price:{{item.price}}</li>
+            <ul><li>item:{{item.itemName}}</li>
+            <li>Price:{{item.itemPrice}}</li>
             <li><paper-icon-button id="removeBtn" on-click="_handleRemove" icon="remove"></paper-icon-button>
             {{quantity}}
             <paper-icon-button id="addBtn" on-click="_handleAdd" icon="add"></paper-icon-button></li>
             </ul>
             </paper-card>
           </template>
-      </iron-pages>
       <span><paper-button on-click="_foodOrder" raised id="foodOrder">OrderNow</paper-button></span>
     `;
   }
@@ -79,8 +77,7 @@ class FoodOrder extends PolymerElement {
       },
       availableItems:{
         type:Array,
-       // value:[{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"}, {name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"},{name:"Dosa",price:"50",category:"food"},{name:"Dosa",price:"500",category:"c"},{name:"Dosa",price:"509",category:"b"},{name:"Dosa",price:"50",category:"a"}]
-       value: [{name:"Dosa",price:"50",category:"Salad"},{name:"Dosa",price:"50",category:"Salad"},{name:"Dosa",price:"500",category:"Sandwich"},{name:"Dosa",price:"509",category:"Healthy bites"},{name:"Dosa",price:"50",category:"Soups"}, {name:"Dosa",price:"50",category:"Soups"},{name:"Dosa",price:"50",category:"Soups"}]
+        value:[]
       },
       availableCategories:{
         type:Array,
@@ -101,23 +98,33 @@ class FoodOrder extends PolymerElement {
   connectedCallback()
   {
     super.connectedCallback();
-    this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/categories?userId=${sessionStorage.getItem('userId')}`,null,'fetchingCategories')  
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.208:8085/foodplex/categories?userId=${sessionStorage.getItem('userId')}`,null,'fetchingCategories')  
   }
   _fetchingCategories(event){
-    console.log(event.detail.data)
     this.availableCategories=event.detail.data.itemCategoryList
   }
-  _handleAdd(){
+  _handleAdd(event){
     this.quantity+=1;
+    sessionStorage.setItem('vendorItemId',event.model.item.itemId)
+    sessionStorage.setItem('price',event.model.item.itemPrice)
   }
   _handleRemove(){
     if(this.quantity!=0){
     this.quantity-=1;
   }}
-  _foodOrder(){
+  _filterCategory(event)
+  {
+     this.selectedCategoryTab=event.model.item.categoryName
+    let items=this.availableCategories;
+    let item=items.filter(item=>{
+      return item.categoryName==this.selectedCategoryTab
+    })
+    this.availableItems=item[0].itemList
+  }
+  _foodOrder(event){
     const quantity=this.quantity;
     const vendorItemId=sessionStorage.getItem('vendorItemId')
-    const price=this.$.price;
+    const price=sessionStorage.getItem('price');
     const obj={quantity,vendorItemId,price}
     sessionStorage.setItem('orderDetailsObj', JSON.stringify(obj))
    this.set('route.path','/payment')

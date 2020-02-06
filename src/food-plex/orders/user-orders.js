@@ -39,8 +39,7 @@ class UserOrders extends PolymerElement
             return {
                 myOrders:{
                     type:Array,
-                    value: [{name:"Dosa",price:"50",category:"Salad"},{name:"Dosa",price:"50",category:"Salad"},{name:"Dosa",price:"500",category:"Sandwich"},{name:"Dosa",price:"509",category:"Healthy bites"},{name:"Dosa",price:"50",category:"Soups"}, {name:"Dosa",price:"50",category:"Soups"},{name:"Dosa",price:"50",category:"Soups"}]
-
+                     value:[]
                   },
             
              }
@@ -54,7 +53,7 @@ class UserOrders extends PolymerElement
   {
     const userId=sessionStorage.getItem('userId')
     super.connectedCallback();
-    this.$.ajax._makeAjaxCall('get',`http://10.117.189.208:8080/foodplex/users/${userId}/orders`,null,'myOrders')  
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.208:8085/foodplex/users/${userId}/orders`,null,'myOrders')  
   }
   _gettingOrders(){
       this.myOrders=event.target.response.orders

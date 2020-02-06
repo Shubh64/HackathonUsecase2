@@ -229,7 +229,16 @@ class PaymentPage extends PolymerElement {
     orderList.push(JSON.parse(sessionStorage.getItem('orderDetailsObj')));
     this.postObj.orderList=orderList;
     console.log(this.postObj);
+    this.$.ajax._makeAjaxCall('post',`http://10.117.189.208:8085/foodplex/users/${sessionStorage.getItem('userId')}/order`,this.postObj,'payments')  
 
+  }
+  ready() {
+    super.ready();
+    this.addEventListener('payments-page', (e) => this._payments(e))
+  }
+  _payments(event){
+     let order=event.model.data
+    alert(`Your order of ${order.totalPrice} is confirmed with OrderID ${order.orderDetailId}`)
   }
 }
 

@@ -13,7 +13,6 @@ class UserHome extends PolymerElement {
       <style>
       :host {
         display: block;
-        height:78vh;
       }
       paper-card {
         max-width: 400px;
@@ -50,20 +49,8 @@ class UserHome extends PolymerElement {
   }
   connectedCallback() {
     super.connectedCallback();
-    this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/users`,null,'userData')  
-    let currentImage = 0;
-    let images = [
-      "url(../../../images/carousal1.jpg)",
-      "url(../../../images/carousal2.jpg)",
-      "url(../../../images/carousal3.jpg)"
-    ];
-    let nextImage = () => {
-      currentImage = (currentImage + 1) % images.length;
-      this.shadowRoot.host.style.background = images[currentImage];
-      this.shadowRoot.host.style.backgroundSize = 'cover';
-      setTimeout(nextImage, 4000)
-    }
-      nextImage();
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.208:8085/foodplex/users`,null,'userData')  
+    
   }
   /**
    * 

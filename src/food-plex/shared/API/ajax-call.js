@@ -61,6 +61,9 @@ class AjaxCall extends PolymerElement {
         case 'getVendorItems':
         this.dispatchEvent(new CustomEvent('vendor-items', { bubbles: true, composed: true, detail: { data } }))
         break;
+        case 'payments':
+        this.dispatchEvent(new CustomEvent('payments-page', { bubbles: true, composed: true, detail: { data } }))
+        break;
       default:
 
     }
@@ -71,8 +74,10 @@ class AjaxCall extends PolymerElement {
     switch (this.action) {
       case 'login': this.dispatchEvent(new CustomEvent('login-status', { bubbles: true, composed: true, detail: { data } }))
         break;
-  
-      default:
+        case 'payments':
+          this.dispatchEvent(new CustomEvent('payments-page', { bubbles: true, composed: true, detail: { data } }))
+          break;
+        default:
 
     }
   }

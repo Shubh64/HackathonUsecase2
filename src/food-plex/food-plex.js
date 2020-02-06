@@ -120,6 +120,7 @@ class FoodPlex extends PolymerElement {
         <payment-page name="payment"></payment-page>
         <food-order name="order"></food-order>
         <user-orders name="user-orders"></user-orders>
+        <vendor-orders name="vendor-orders"></vendor-orders>
         <error-view name="error404"></error-view>
       </iron-pages> 
     </app-header>
@@ -142,7 +143,7 @@ class FoodPlex extends PolymerElement {
       items: {
         type: Array,
         value: function () {
-          return [{ label: 'User-Home', route: 'user-home' },{ label: 'Vendor-Home', route: 'vendor-home' },{ label: 'Login', route: 'login' }, { label: 'Payment', route: 'payment' },{ label: 'Order', route: 'order' },{ label: 'MyOrders', route: 'user-orders' }]
+          return [{ label: 'User-Home', route: 'user-home' },{ label: 'Vendor-Home', route: 'vendor-home' },{ label: 'Login', route: 'login' }, { label: 'Payment', route: 'payment' },{ label: 'Order', route: 'order' },{ label: 'MyOrders', route: 'user-orders' },{ label: 'VendorOrders', route: 'vendor-orders' }]
         }
       }
     };
@@ -166,6 +167,8 @@ class FoodPlex extends PolymerElement {
       case 'order': import('./orders/food-order.js')
         break;
         case 'user-orders': import('./orders/user-orders.js')
+        break;
+        case 'vendor-orders': import('./orders/vendor-orders.js')
         break;
       default: import('./error-view.js')
         break;

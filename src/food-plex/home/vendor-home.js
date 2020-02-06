@@ -83,17 +83,17 @@ class VendorHome extends PolymerElement {
             <paper-tab name="{{item.categoryName}}" on-click="_handleCategoryItems"> {{item.categoryName}}</paper-tab>
           </template>
       </paper-tabs>
-      <iron-pages selected="{{selected}}">
           <template is="dom-repeat" items={{availableItems}}>
-            <paper-card name="{{item.itemList}}">
+            <paper-card>
             <ul>
-            <li>item:{{item.name}}</li>
-            <li>Price:{{item.price}}</li>
+            <li>item:{{item.itemName}}</li>
+            <li>Price:{{item.itemPrice}}</li>
             <li><paper-icon-button id="deleteBtn" on-click="_handleDelete" icon="delete"></paper-icon-button></li>
             </ul>
             </paper-card>
           </template>
-      </iron-pages>
+          <h2>VendorOrders</h2>
+          
     `;
   }
   static get properties() {
@@ -142,7 +142,7 @@ class VendorHome extends PolymerElement {
   connectedCallback()
   {
     super.connectedCallback();
-    this.$.ajax._makeAjaxCall('get',`http://10.117.189.138:8085/foodplex/categories?userId=${sessionStorage.getItem('userId')}`,null,'fetchingCategories')  
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.208:8085/foodplex/categories?userId=${sessionStorage.getItem('userId')}`,null,'fetchingCategories')  
   }
   _fetchingCategories(event){
     console.log(event.detail.data)
@@ -161,7 +161,7 @@ class VendorHome extends PolymerElement {
   _handleAdd(event)
   {
     console.log(event)
-    this.$.ajax._makeAjaxCall('get',`http://10.117.189.77:8080/foodplex/vendors`,null,'populateFields')
+    this.$.ajax._makeAjaxCall('get',`http://10.117.189.208:8085/foodplex/vendors`,null,'populateFields')
     this.$.modal.open()
   }
   _populateFields(event)
@@ -173,20 +173,17 @@ class VendorHome extends PolymerElement {
   {
     const price=this.$.price.value;
     const postObj={price,categoryId:this.categoryId,itemId:this.itemId}
-    this.$.ajax._makeAjaxCall('post',`http://10.117.189.77:8080/foodplex/vendors/${sessionStorage.getItem('userId')}/item`,postObj,'')
+    this.$.ajax._makeAjaxCall('post',`http://10.117.189.208:8085/foodplex/vendors/${sessionStorage.getItem('userId')}/item`,postObj,'')
   }
   _handleCategoryItems(event)
   {
      this.selectedCategoryTab=event.model.item.categoryName
     console.log(this.selectedCategoryTab)
-    this.$.ajax._makeAjaxCall('get',`http://10.117.189.77:8080/foodplex/categories?userId=${sessionStorage.getItem('userId')}`,null,'getVendorItems')
-  }
-  _getVendorItems(event)
-  {
-    let items=event.detail.data.itemCategoryList
-    items.filter(item=>{
-      item.categoryName=this.selectedCategoryTab
+    let items=this.availableCategories;
+    let item=items.filter(item=>{
+      return item.categoryName==this.selectedCategoryTab
     })
+    this.availableItems=item[0].itemList
   }
 }
 
